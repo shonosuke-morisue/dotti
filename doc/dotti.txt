@@ -1,78 +1,81 @@
-���ǂ����I�H
+■どっち！？
 
 
 //--------------------------------------------------
-// �K�v�@�\
+// 必要機能
 //--------------------------------------------------
 
 
-�Etwitter���O�C���@�\
-�@��facebook�ɂ���X�Ή�������
+・twitterログイン機能
+　→facebookにも後々対応したい
 
-�E�摜���e�@�\
-�@����{�͎����ŃA�b�v���[�h
-�@�������I�ɂ�Flickr����摜�擾
+・画像投稿機能
+　→基本は自分でアップロード
+　→将来的にはFlickrから画像取得
 
-�E���[�@�\
-�E�V�F�A�@�\
-�@�����[�������Ƃ��V�F�A
-�@���ݖ���V�F�A
-�@�iTwitter�Afacebook�̗����Ή��j
-
-
-�E�g�b�v�y�[�W
-�E�}�C�y�[�W
-�E�摜���e�y�[�W
-�E�ݖ�y�[�W
+・投票機能
+・シェア機能
+　→投票したことをシェア
+　→設問をシェア
+　（Twitter facebook LINE対応）
 
 
-�Etwitter�ɓ��e
-�@[�ݖ�] �� [��] �ɓ��[���܂����I #�ǂ����I�H [�ݖ��url] [�ݖ�̉摜url]
+・トップページ
+・マイページ
+・画像投稿ページ
+・設問ページ
+
+
+・twitterに投稿
+　[設問] で [回答] に投票しました！ #どっち！？ [設問のurl] [設問の画像url]
+
+・マッチング
+　投票の傾向が近いユーザーをマッチングして表示
 
 
 //--------------------------------------------------
-// DB�݌v
+// DB設計
 //--------------------------------------------------
 
-��user
-�Euser_id
-�Etime
+▼user
+・user_id
+・time
 
 
-��quetion
-�Equetion_id �ݖ�̃��j�[�Nid
-�Equestion_msg �ݖ�̃e�L�X�g
-�Econtributor �ݖ�̓��e���[�U�[��id
-�Eimg_url_0 �摜��url
-�Eanswer_0_count ���[�̃J�E���g
-�Eanswer_0_ratio ���[�̊���
-�Eimg_url_1 �摜��url
-�Eanswer_1_count ���[�̃J�E���g
-�Eanswer_1_ratio ���[�̊���
-�Etime
+▼quetion
+・quetion_id 設問のユニークid
+・question_msg 設問のテキスト
+・contributor 設問の投稿ユーザーのid
+・img_url_0 画像のurl
+・answer_0_count 投票のカウント
+・answer_0_ratio 投票の割合
+・img_url_1 画像のurl
+・answer_1_count 投票のカウント
+・answer_1_ratio 投票の割合
+・time
 
 
-��answer
-�Euser_id ���[�U�[�̃��j�[�Nid
-�Equetion_id �ݖ�̃��j�[�Nid
-�Eanswer 0or1 �ǂ���ɓ��[������
-�Etime
+▼answer
+・user_id ユーザーのユニークid
+・quetion_id 設問のユニークid
+・answer 0or1 どちらに投票したか
+・time
 
 
-��matching�i1��1�񂭂炢�X�V����B�j
-�Euser_id ���[�U�[�̃��j�[�Nid
-�Ematch_user_00 �}�b�`�������[�U�[�̃��j�[�Nid
-�Ematch_user_01 �}�b�`�������[�U�[�̃��j�[�Nid
-�Ematch_user_02 �}�b�`�������[�U�[�̃��j�[�Nid
-�Ematch_user_03 �}�b�`�������[�U�[�̃��j�[�Nid
-�Ematch_user_04 �}�b�`�������[�U�[�̃��j�[�Nid
-�Ematch_user_05 �}�b�`�������[�U�[�̃��j�[�Nid
-�Ematch_user_06 �}�b�`�������[�U�[�̃��j�[�Nid
-�Ematch_user_07 �}�b�`�������[�U�[�̃��j�[�Nid
-�Ematch_user_08 �}�b�`�������[�U�[�̃��j�[�Nid
-�Ematch_user_09 �}�b�`�������[�U�[�̃��j�[�Nid
-�Ematch_user_10 �}�b�`�������[�U�[�̃��j�[�Nid
-�Etime
+▼matching（1日1回くらい更新する。）
+・user_id ユーザーのユニークid
+・match_user_00 マッチしたユーザーのユニークid
+・match_user_01 マッチしたユーザーのユニークid
+・match_user_02 マッチしたユーザーのユニークid
+・match_user_03 マッチしたユーザーのユニークid
+・match_user_04 マッチしたユーザーのユニークid
+・match_user_05 マッチしたユーザーのユニークid
+・match_user_06 マッチしたユーザーのユニークid
+・match_user_07 マッチしたユーザーのユニークid
+・match_user_08 マッチしたユーザーのユニークid
+・match_user_09 マッチしたユーザーのユニークid
+・match_user_10 マッチしたユーザーのユニークid
+・time
 
 
 
