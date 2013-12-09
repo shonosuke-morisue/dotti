@@ -29,6 +29,7 @@ $_SESSION['user_id'] = $oAccessToken['user_id'];
 $_SESSION['screen_name'] = $oAccessToken['screen_name'];
 $_SESSION['oauth_token'] = $oAccessToken['oauth_token'];
 $_SESSION['oauth_token_secret'] = $oAccessToken['oauth_token_secret'];
+$_SESSION['oAccessToken'] = $oAccessToken;
 // loginページへリダイレクト
 header("Location: http://morisue.sakura.ne.jp/dotti/twitter/login.php");
 ?>
