@@ -57,7 +57,7 @@ if(isset($oObj->{'errors'}) && $oObj->{'errors'} != ''){
         $sCreatedAt =               $oObj[$iTweet]->{'created_at'};
         $sStrtotime=                strtotime($sCreatedAt);
         $sCreatedAt =               date('Y-m-d H:i:s', $sStrtotime);
-        ?>
+?>
         <hr/>
         <h4><?php echo $sName; ?>さんのつぶやき</h4>
         <ul>

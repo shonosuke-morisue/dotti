@@ -1,38 +1,37 @@
 <?php
-include './include/session.php';
-include './include/db_access.php';
+require_once './include/session.php';
+require_once './include/db_access.php';
+
+//-------------------------------------------------------
+//
+// ログアウト処理
+//
+//-------------------------------------------------------
+
+//セッション変数は上書きして初期化
+$_SESSION = array();
+
+//cookieのセッションIDを破棄
+if (isset($_COOKIE["PHPSESSID"])) {
+	setcookie("PHPSESSID", '', time() - 1800, '/');
+}
+//セッションを破棄
+session_destroy();
+
+//-------------------------------------------------------
 
 include './include/header.php';
 
-echo('<hr>');
-
 ?>
 
-
+<hr>
 ■ログアウトページ<br>
-<?php
-    print('セッション変数の確認をします。<br>');
-    if (!isset($_SESSION["user_name"])){
-        print('セッション変数user_nameは登録されていません。<br>');
-    }else{
-        print($_SESSION["user_name"].'<br>');
-    }
-
-    print('セッションIDの確認をします。<br>');
-    if (!isset($_COOKIE["PHPSESSID"])){
-        print('セッションは登録されていません。<br>');
-    }else{
-        print($_COOKIE["PHPSESSID"].'<br>');
-    }
-?>
-
+ログアウトしましたよ
 <hr>
 
 <a href="./login.php">ログインページ</a><br>
 <a href="./logout.php">ログアウトページ</a><br>
 <a href="./mypage.php">リザルトページ</a><br>
-
-
 
 
 <?php

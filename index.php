@@ -58,13 +58,12 @@ if (isset($_POST["login"])) {
 
 	//テーブルの内容を取得して表示
 //	$_POST["user_name"] = mb_convert_encoding($_POST["user_name"], "utf-8", "auto");
-	$result = mysql_query('SELECT * FROM user WHERE user_name = "'.$_POST["user_name"].'";');
-
-	db_error($result;
-
+	$result = mysql_query('SELECT * FROM user WHERE user_name = "'.$_POST['user_name'].'";');
+	
+	db_error($result);
+	
 	$user = mysql_fetch_assoc($result);
-
-
+	
 	// user_nameが「php」でpasswordが「password」だとログイン出来るようになっている
 	if ($_POST["user_name"] == $user["user_name"] && $_POST["password"] == $user["password"]) {
 

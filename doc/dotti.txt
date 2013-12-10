@@ -47,20 +47,26 @@
 
 ▼user
 ・user_id
-・time
+・screen_name
+・entry_time 登録日時
+・time 最終更新日時
 
 
 ▼quetion
 ・quetion_id 設問のユニークid
 ・question_msg 設問のテキスト
 ・contributor 設問の投稿ユーザーのid
+
 ・img_url_0 画像のurl
 ・answer_0_count 投票のカウント
 ・answer_0_ratio 投票の割合
+
 ・img_url_1 画像のurl
 ・answer_1_count 投票のカウント
 ・answer_1_ratio 投票の割合
-・time
+
+・contribute_time 投稿日時
+・time 最終更新日時
 
 
 ▼answer

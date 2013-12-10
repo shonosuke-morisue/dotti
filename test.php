@@ -162,12 +162,7 @@ if (isset($_FILES[$upload_key])) {
 header('Content-Type: text/html; charset=utf-8');
 
 ?>
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>画像アップロード</title>
-  </head>
-  <body>
+
 <?php if (isset($msg)): ?>
     <p><?=$msg?></p>
 <?php endif; ?>
@@ -178,8 +173,6 @@ header('Content-Type: text/html; charset=utf-8');
         <label><input type="submit" value="送信"></label>
       </fieldset>
     </form>
-  </body>
-</html>
 
 </body>
 </html>

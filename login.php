@@ -1,115 +1,71 @@
 <?php
-include './include/session.php';
-include './include/db_access.php';
-
-// ログインボタンが押されたかを判定
-// 初めてのアクセスでは認証は行わずエラーメッセージは表示しないように
-if (isset($_POST["login"])) {
-
-
-	$user_name = htmlspecialchars($_POST['user_name'],ENT_QUOTES);
-	$pass = htmlspecialchars($_POST['password'],ENT_QUOTES);
-
-	//--------------------------------------
-	//入力確認
-	//--------------------------------------
-	if (empty($_POST["password"])) {
-		$error_message = 'パスワードを入力してください。';
-	}
-
-	if (empty($_POST["user_name"])) {
-		$error_message = 'IDを入力してください。';
-	}
-
-	if (!isset($error_message)) {
-		//DBからユーザー情報を取得
-		$link = db_access();
-		$result = mysql_query('SELECT * FROM user WHERE user_name = "'.$_POST["user_name"].'";');
-
-		db_error($result);
-
-		$user = mysql_fetch_assoc($result);
-
-
-		// ユーザー名とパスワードが一致した場合はログイン処理を行う
-		include './include/encrypt.php';
-		if ($user_name == $user["user_name"] && pass_check( $pass , $user["password"] )) {
-
-			// ログインが成功した証をセッションに保存
-			$_SESSION["user_name"] = $user_name;
-
-
-			//DBからユーザー情報を取得
-			$link = db_access();
-			$result = mysql_query('SELECT id FROM user WHERE user_name = "'.$user_name.'";');
-
-			db_error($result);
-
-			$user = mysql_fetch_assoc($result);
-			// ユーザーidをセッションに保存
-			$_SESSION["user_id"] = $user["id"];
-
-			//DB切断処理
-			db_close($link);
-
-			// マイページにリダイレクトする
-			$login_url = ((empty($_SERVER["HTTPS"]) ? "http://" : "https://") . $_SERVER["HTTP_HOST"] . "/dotti/mypage.php");
-			header("Location: {$login_url}");
-		}else{
-			$error_message = "IDもしくはパスワードが間違っています。";
-		}
-	}
-}
-
-
-
-
+require_once './include/session.php';
+require_once './include/db_access.php';
+// OAuth用ライブラリ「twitteroauth」
+require_once './twitteroauth/twitteroauth.php';
 
 include './include/header.php';
 
-echo('<hr>');
-
-// セッション結果の表示テスト
-    print('セッション変数の確認をします。<br>');
-    if (!isset($_SESSION["user_name"])){
-        print('セッション変数user_nameは登録されていません。<br>');
-    }else{
-        print($_SESSION["user_name"].'<br>');
-    }
-
-    print('セッションIDの確認をします。<br>');
-    if (!isset($_COOKIE["PHPSESSID"])){
-        print('セッションは登録されていません。<br>');
-    }else{
-        print($_COOKIE["PHPSESSID"].'<br>');
-    }
-
-echo('<hr>');
-
-
-// パスワード入力にエラーがある場合はエラーメッセージ表示
-if (isset($error_message)) {
-	print '<p id="error">'.$error_message.'</p>';
-}
 ?>
 
 
-<form action="login.php" method="POST">
-▼ID<br><input type="text" name="user_name" value="" ><br>
-▼パスワード<br><input type="password" name="password" value="" ><br>
-<input type="submit" name="login" value="ログイン" >
-</form>
-
-<hr>
-<a href="./entry.php">新規登録はこちら</a>
-<hr>
-
+<a href="./contribute.php">投稿する</a><br>
 <a href="./login.php">ログインページ</a><br>
 <a href="./logout.php">ログアウトページ</a><br>
 <a href="./mypage.php">リザルトページ</a><br>
 
 
+<?php
+// OAuth用ライブラリ「twitteroauth」
+require_once 'twitteroauth/twitteroauth.php';
+//--------------------------------------
+//セッションのアクセストークンのチェック
+//--------------------------------------
+if((isset($_SESSION["oauth_token"]) && $_SESSION["oauth_token"] !== NULL) && (isset($_SESSION["oauth_token_secret"]) && $_SESSION["oauth_token_secret"] !== NULL)) {
+  // ログインしたらここにくる
+}
+  // ログアウトの状態
+  else {
+    // オブジェクト生成
+    $twitter_oauth_object = new TwitterOAuth (
+      ConsumerKey,
+      ConsumerSecret);
+    //call_backを指定して request tokenを取得
+    $oOauthToken = $twitter_oauth_object->getRequestToken(CallBackUrl);
+    //セッション格納
+    $_SESSION['request_token'] = $oOauthToken['oauth_token'];
+    $sToken = $oOauthToken['oauth_token'];
+    $_SESSION['request_token_secret'] = $oOauthToken['oauth_token_secret'];
+    //認証URLの引数 falseの場合はtwitter側で認証確認表示
+    if(isset($_GET['authorizeBoolean']) && $_GET['authorizeBoolean'] != '') {
+      $bAuthorizeBoolean = false;
+    }
+      else {
+        $bAuthorizeBoolean = true;
+      }
+    //Authorize url を取得
+    $sUrl = $twitter_oauth_object->getAuthorizeURL($sToken, $bAuthorizeBoolean);
+  }
+?>
+  <br>
+  <br>
+  <a href="<?php print($sUrl);?>">Twitterアカウントを使いログインする</a>
+  <br>
+  <form action="logout.php" method="POST">
+  <input type="submit" name="logout" value="ログアウト" />
+  </form>
+  <br>
+<?php
+echo '<p>$_SESSION["user_id"] => '.$_SESSION['user_id'].'</p>';
+echo '<p>$_SESSION["screen_name"] => '.$_SESSION['screen_name'].'</p>';
+echo '<p>$_SESSION["oauth_token"] => '.$_SESSION["oauth_token"].'</p>';
+echo '<p>$_SESSION["oauth_token_secret"] => '.$_SESSION["oauth_token_secret"].'</p>';
 
+echo "<pre>";
+var_dump($_SESSION['oAccessToken']);
+echo "</pre>";
+
+?>
 
 <?php
 include './include/footer.php';

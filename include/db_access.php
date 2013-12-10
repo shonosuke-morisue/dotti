@@ -1,18 +1,18 @@
 <?php
+// DBアクセス用の情報を取得
+require_once '../../pass/dotti.php';
+
 //DB接続処理
 function db_access() {
 
-	// DBアクセス用の情報を取得
-	include '../../pass/dotti.php';
-
 	//mysql接続
-	$link = mysql_connect( $db_searver , $db_id , $db_pass );
+	$link = mysql_connect( DB_SEAVER , DB_ID , DB_PASS );
 	if (!$link) {
 		die('接続失敗です。'.mysql_error());
 	}
 
 	//DB選択
-	$db_selected = mysql_select_db('dotti', $link);
+	$db_selected = mysql_select_db('morisue_dotti', $link);
 	if (!$db_selected){
 		die('データベース選択失敗です。'.mysql_error());
 	}
