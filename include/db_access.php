@@ -11,6 +11,9 @@ function db_access() {
 		die('接続失敗です。'.mysql_error());
 	}
 
+	//文字コードをutf8に設定
+	mysql_set_charset('utf8');
+		
 	//DB選択
 	$db_selected = mysql_select_db('morisue_dotti', $link);
 	if (!$db_selected){
@@ -18,8 +21,6 @@ function db_access() {
 	}
 	return $link;
 
-	//文字コードをutf8に設定
-	mysql_set_charset('utf8');
 }
 
 

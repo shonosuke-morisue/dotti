@@ -54,16 +54,16 @@
 
 ▼quetion
 ・quetion_id 設問のユニークid
-・question_msg 設問のテキスト
+・question_title 設問のタイトル
 ・contributor 設問の投稿ユーザーのid
 
 ・img_url_0 画像のurl
-・answer_0_count 投票のカウント
-・answer_0_ratio 投票の割合
+・answer_count_0 投票のカウント
+・answer_ratio_0 投票の割合
 
 ・img_url_1 画像のurl
-・answer_1_count 投票のカウント
-・answer_1_ratio 投票の割合
+・answer_count_1 投票のカウント
+・answer_ratio_1 投票の割合
 
 ・contribute_time 投稿日時
 ・time 最終更新日時
@@ -73,6 +73,7 @@
 ・user_id ユーザーのユニークid
 ・quetion_id 設問のユニークid
 ・answer 0or1 どちらに投票したか
+・answer_msg 投票メッセージ（どうすっか？）
 ・time
 
 
@@ -90,10 +91,5 @@
 ・match_user_09 マッチしたユーザーのユニークid
 ・match_user_10 マッチしたユーザーのユニークid
 ・time
-
-
-
-
-
 
 

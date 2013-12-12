@@ -20,6 +20,8 @@ include './include/header.php';
 
 
 /* 設定 */
+$title   = $_POST["title"];
+$name = array();
 $upload_key   = 'upfile';
 $image_dir    = 'images';
 $thumb_dir    = 'thumbs';
@@ -30,10 +32,18 @@ $thumb_width  = 32;
 $thumb_height = 32;
 
 /* 処理 */
-if (isset($_FILES[$upload_key])) {
+		
+if (isset($title) && isset($_FILES[$upload_key])) {
 
     try {
-
+ 			   	
+    	// タイトルエラーチェック
+        switch ($title) {
+            case mb_strlen($title) > 140: 
+                throw new RuntimeException('タイトルは140文字以内にしてください。');
+        }
+        
+        
     	for ($i = 0; $i < 2; $i++) {
 	        $error = $_FILES[$upload_key]['error'];
 
@@ -42,7 +52,7 @@ if (isset($_FILES[$upload_key])) {
 	//             throw new RuntimeException('複数ファイルの同時アップロードは許可されていません。');
 	//         }
 
-	        // エラーチェック
+	        // 画像エラーチェック
 	        switch ($error) {
 	            case UPLOAD_ERR_INI_SIZE:
 	                throw new RuntimeException('php.iniで許可されている最大サイズを超過しました。');
@@ -106,7 +116,7 @@ if (isset($_FILES[$upload_key])) {
 
 	        // ユニークなファイル名を拡張子を含めて生成
 	        $rand = sha1(mt_rand() . microtime());
-	        $name = "{$rand}.{$ext}";
+	        $name[$i] = "{$rand}.{$ext}";
 
 	        // 画像リソースを生成
 	        $img = call_user_func("imagecreatefrom{$mime}", $tmp_name);
@@ -117,7 +127,7 @@ if (isset($_FILES[$upload_key])) {
 	        // サムネイルを作成
 	        $thumb = imagecreatetruecolor($thumb_width, $thumb_height);
 	        imagecopyresampled($thumb, $img, 0, 0, 0, 0, $thumb_width, $thumb_height, $width, $height);
-	        if (!call_user_func("image{$mime}", $thumb, "{$thumb_dir}/{$name}")) {
+	        if (!call_user_func("image{$mime}", $thumb, "{$thumb_dir}/{$name[$i]}")) {
 	            throw new RuntimeException('サムネイルの保存に失敗しました。');
 	        }
 
@@ -138,12 +148,12 @@ if (isset($_FILES[$upload_key])) {
 	            // リサイズの必要があれば縦横比を維持してリサイズ
 	            $new_img = imagecreatetruecolor($new_width, $new_height);
 	            imagecopyresampled($new_img, $img, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
-	            if (!call_user_func("image{$mime}", $new_img, "{$image_dir}/{$name}")) {
+	            if (!call_user_func("image{$mime}", $new_img, "{$image_dir}/{$name[$i]}")) {
 	                throw new RuntimeException('サムネイルの保存に失敗しました。');
 	            }
 	        } else {
 	            // リサイズの必要がなければそのままファイルを移動
-	            if (!move_uploaded_file($tmp_name, "{$image_dir}/{$name}")) {
+	            if (!move_uploaded_file($tmp_name, "{$image_dir}/{$name[$i]}")) {
 	                throw new RuntimeException('画像の保存に失敗しました。');
 	            }
 	        }
@@ -151,6 +161,25 @@ if (isset($_FILES[$upload_key])) {
 	        $msg = '<span style="color:green;">ファイルをアップロードしました！</span>';
 
     	}
+    	
+    	//db登録処理
+    	$link = db_access();
+    	//タイムゾーンの設定
+    	date_default_timezone_set('Asia/Tokyo');
+    	//日付の取得
+    	$datetime = date("Y-m-d H:i:s");
+    	
+    	//userへデータの登録
+    	$entry = mysql_query('INSERT INTO question( question_title , contributor , img_url_0 , img_url_1 , time ) VALUES ( "'.$title.'","'.$user_id.'","'.$name[0].'","'.$name[1].'","'.$datetime.'" );');
+    
+        if (db_error($entry)) {
+            throw new RuntimeException(db_error($entry));
+        }
+
+    	//DB切断処理
+    	db_close($link);
+    	$question = true;
+    	
     } catch (Exception $e) {
 
         $msg = '<span style="color:red;">' . $e->getMessage() . '</span>';
@@ -162,17 +191,30 @@ if (isset($_FILES[$upload_key])) {
 ?>
 
 
+<?php if (!isset($user_id)): ?>
+    <p>ログインしてません</p>
+<?php endif; ?>
 <?php if (isset($msg)): ?>
     <p><?=$msg?></p>
 <?php endif; ?>
-    <form enctype="multipart/form-data" method="post" action="">
+<?php if (isset($question)): ?>
+    <p><?=$title?></p>
+    <img src="./thumbs/<?=$name[0]?>">
+    <img src="./thumbs/<?=$name[1]?>">
+    <br>
+    <img src="./images/<?=$name[0]?>">
+    <img src="./images/<?=$name[1]?>">
+    <br>
+<?php endif; ?>
+<form enctype="multipart/form-data" method="post" action="">
       <fieldset>
         <legend>画像ファイルを選択(JPEG, GIF, PNGのみ対応)</legend>
-        <label><input type="file" name="upfile[]"></label><br>
-        <label><input type="file" name="upfile[]"></label><br>
+        <label><<タイトル>><br><input type="text" name="title" size="10" maxlength="140" value="どっちが好き？" placeholder="お題を入力してください" required></label><br>
+        <label><<投稿画像１>><br><input type="file" name="upfile[]" required></label><br>
+        <label><<投稿画像>>２<br><input type="file" name="upfile[]" required></label><br>
         <label><input type="submit" value="送信"></label>
       </fieldset>
-    </form>
+</form>
 
 
 
