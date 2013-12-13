@@ -18,10 +18,18 @@ include './include/header.php';
 
   <br>
   <br>
-  <a href="<?php print($sUrl);?>">Twitterアカウントを使いログインする</a>
-  <br>
   <form action="logout.php" method="POST">
   <input type="submit" name="logout" value="ログアウト" />
+  </form>
+  <br>
+  <form action="question.php" method="GET">
+      <input type="radio" name="question_id" value="5">5<br>
+      <input type="radio" name="question_id" value="6">6<br>
+      <input type="radio" name="question_id" value="7">7<br>
+      <input type="radio" name="question_id" value="8">8<br>
+      <input type="radio" name="question_id" value="9">9<br>
+      <input type="radio" name="question_id" value="10">10<br>
+  <input type="submit" value="投票する" />
   </form>
   <br>
 <?php
