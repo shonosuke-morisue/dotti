@@ -44,20 +44,29 @@ class question {
 		$result = mysql_query('INSERT answer( user_id , quetion_id , answer , answer_msg ) VALUES ('.$user_id.','.$this->question_id.','.$answer.',"");');
 		db_error($result);
 
-		// 投票した結果の設問の総投票数を取得
-		for ($i = 0; $i < 2; $i++) {
-			$result = mysql_query('SELECT * FROM answer WHERE question_id = '.$this->question_id.' AND answer = '.$answer.';');
-			db_error($result);
+// わざわざ数えなくてもいい。
+//
+// 		// 投票した結果の設問の総投票数を取得
+// 		for ($i = 0; $i < 2; $i++) {
+// 			$result = mysql_query('SELECT * FROM answer WHERE question_id = '.$this->question_id.' AND answer = '.$answer.';');
+// 			db_error($result);
 
-			$question_answer = mysql_fetch_assoc($result);
+// 			$question_answer = mysql_fetch_assoc($result);
 
-			$answer_list = array();
-			foreach ($question_answer as $answer) {
-				array_push($answer_list, $answer);
-			}
+// 			$answer_list = array();
+// 			foreach ($question_answer as $answer) {
+// 				array_push($answer_list, $answer);
+// 			}
 
-			$this->answer_count[$i] = $array_count_values($answer_list);
+// 			$this->answer_count[$i] = $array_count_values($answer_list);
 
+// 		}
+
+		// 投票数に+1する
+		if ($answer == 0) {
+			$this->answer_count[0] = $this->answer_count[0] + 1 ;
+		}elseif ($answer == 1){
+			$this->answer_count[1] = $this->answer_count[1] + 1 ;
 		}
 
 
@@ -90,6 +99,7 @@ class question {
     	db_close($link);
 	}
 }
+
 ?>
 <br>
 ■設問
@@ -98,9 +108,43 @@ if (isset($_GET['question_id'])) {
 	$question_id = $_GET['question_id'];
 	$question = new question($question_id);
 	echo '<hr>'.$question->question_id.'<br>'.$question->question_title.'<br><img src="./images/'.$question->img_url[0].'">'.'<br><img src="./images/'.$question->img_url[1].'">'.'<hr>';
+
+	// 投票済みかチェック
+
+	// DBに接続
+	$link = db_access();
+
+	// 投票状況を取得
+	$result = mysql_query('SELECT * FROM answer WHERE question_id = '.$this->question_id.' AND user_id = '.$user_id.';');
+	db_error($result);
+	$answer = mysql_fetch_assoc($result);
+
+	//DB切断処理
+	db_close($link);
+
+
+	// 投票がPOSTされていたら投票処理
+	if (isset($_POST["answer"])) {
+		$question->answer($_POST["answer"]) ;
+	}
+
+?>
+
+	<form action="?question_id=<?php echo $_GET['question_id']?>>" method="POST">
+	<input type="hidden" name="answer" value="0">
+	<input type="submit" value="A" />
+	</form>
+
+	<form action="?question_id=<?php echo $_GET['question_id']?>>" method="POST">
+	<input type="hidden" name="answer" value="1">
+	<input type="submit" value="B" />
+	</form>
+<?php
 }else {
-	echo "はずれ！";
+	echo "はずれ！<br>[question_id]を指定してね！ ";
 }
+
+
 
 $question_id = 10;
 $question = new question($question_id);
