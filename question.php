@@ -44,24 +44,6 @@ class question {
 		$result = mysql_query('INSERT INTO answer( user_id , question_id , answer , answer_msg ) VALUES ("'.$user_id.'","'.$this->question_id.'","'.$answer.'","");');
 		db_error($result);
 
-// わざわざ数えなくてもいい。
-//
-// 		// 投票した結果の設問の総投票数を取得
-// 		for ($i = 0; $i < 2; $i++) {
-// 			$result = mysql_query('SELECT * FROM answer WHERE question_id = '.$this->question_id.' AND answer = '.$answer.';');
-// 			db_error($result);
-
-// 			$question_answer = mysql_fetch_assoc($result);
-
-// 			$answer_list = array();
-// 			foreach ($question_answer as $answer) {
-// 				array_push($answer_list, $answer);
-// 			}
-
-// 			$this->answer_count[$i] = $array_count_values($answer_list);
-
-// 		}
-
 		// 投票数に+1する
 		if ($answer == 0) {
 			$this->answer_count[0] = $this->answer_count[0] + 1 ;
@@ -109,15 +91,6 @@ if (isset($_GET['question_id'])) {
 	$question = new question($question_id);
 	echo '<hr>'.$question->question_id.'<br>'.$question->question_title.'<br><img src="./images/'.$question->img_url[0].'">'.'<br><img src="./images/'.$question->img_url[1].'">'.'<hr>';
 
-//---------------------------------------------------------------------------------------
-//
-// 1.ログイン済み-投票済み
-// 2.ログイン済み-未投票
-// 3.未ログイン
-//
-//---------------------------------------------------------------------------------------
-
-
 	// 投票済みチェック
 
 	if (isset($user_id)) {
@@ -134,7 +107,6 @@ if (isset($_GET['question_id'])) {
 			$question->answer($_POST["answer"], $user_id) ;
 		}elseif (!$answer){
 		// まだ投票してないので投票ボタン表示
-
 ?>
 			<form action="?question_id=<?php echo $_GET['question_id']?>" method="POST">
 			<input type="hidden" name="answer" value="0">
