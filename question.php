@@ -37,11 +37,11 @@ class question {
 	}
 
 	// 投票処理
-	function answer($answer) {
+	function answer($answer , $user_id) {
 		// DBに接続
 		$link = db_access();
 		// 投票をDBに登録
-		$result = mysql_query('INSERT answer( user_id , quetion_id , answer , answer_msg ) VALUES ('.$user_id.','.$this->question_id.','.$answer.',"");');
+		$result = mysql_query('INSERT INTO answer( user_id , question_id , answer , answer_msg ) VALUES ("'.$user_id.'","'.$this->question_id.'","'.$answer.'","");');
 		db_error($result);
 
 // わざわざ数えなくてもいい。
@@ -109,49 +109,51 @@ if (isset($_GET['question_id'])) {
 	$question = new question($question_id);
 	echo '<hr>'.$question->question_id.'<br>'.$question->question_title.'<br><img src="./images/'.$question->img_url[0].'">'.'<br><img src="./images/'.$question->img_url[1].'">'.'<hr>';
 
-	// 投票済みかチェック
-
-	// DBに接続
-	$link = db_access();
-
-	// 投票状況を取得
-	$result = mysql_query('SELECT * FROM answer WHERE question_id = '.$this->question_id.' AND user_id = '.$user_id.';');
-	db_error($result);
-	$answer = mysql_fetch_assoc($result);
-
-	//DB切断処理
-	db_close($link);
+//---------------------------------------------------------------------------------------
+//
+// 1.ログイン済み-投票済み
+// 2.ログイン済み-未投票
+// 3.未ログイン
+//
+//---------------------------------------------------------------------------------------
 
 
-	// 投票がPOSTされていたら投票処理
-	if (isset($_POST["answer"])) {
-		$question->answer($_POST["answer"]) ;
-	}
+	// 投票済みチェック
+
+	if (isset($user_id)) {
+		// DBに接続
+		$link = db_access();
+
+		// 投票状況を取得
+		$result = mysql_query('SELECT * FROM answer WHERE question_id = "'.$question->question_id.'" AND user_id = "'.$user_id.'";');
+		db_error($result);
+		$answer = mysql_fetch_assoc($result);
+
+		// まだ投票してなくて、投票がPOSTされていれば投票処理
+		if (!$answer && isset($_POST["answer"])) {
+			$question->answer($_POST["answer"], $user_id) ;
+		}elseif (!$answer){
+		// まだ投票してないので投票ボタン表示
 
 ?>
+			<form action="?question_id=<?php echo $_GET['question_id']?>" method="POST">
+			<input type="hidden" name="answer" value="0">
+			<input type="submit" value="A" />
+			</form>
 
-	<form action="?question_id=<?php echo $_GET['question_id']?>>" method="POST">
-	<input type="hidden" name="answer" value="0">
-	<input type="submit" value="A" />
-	</form>
-
-	<form action="?question_id=<?php echo $_GET['question_id']?>>" method="POST">
-	<input type="hidden" name="answer" value="1">
-	<input type="submit" value="B" />
-	</form>
+			<form action="?question_id=<?php echo $_GET['question_id']?>" method="POST">
+			<input type="hidden" name="answer" value="1">
+			<input type="submit" value="B" />
+			</form>
 <?php
+		}
+
+	}
+
 }else {
 	echo "はずれ！<br>[question_id]を指定してね！ ";
 }
 
-
-
-$question_id = 10;
-$question = new question($question_id);
-echo "<pre>test<br>";
-var_dump($question);
-echo "</pre>";
-echo '<hr>'.$question->question_title.'<hr>';
 ?>
 <br>
 
