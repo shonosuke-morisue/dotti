@@ -13,6 +13,7 @@ include './include/header.php';
 <a href="./login.php">ログインページ</a><br>
 <a href="./logout.php">ログアウトページ</a><br>
 <a href="./mypage.php">リザルトページ</a><br>
+<a href="./question_list.php">設問リスト</a><br>
 
 
 

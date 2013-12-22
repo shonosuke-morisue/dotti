@@ -16,7 +16,7 @@ echo('
 		</span>
 		
 		<span class="icon">
-			<a href="./question.php"><img src="./material/star.gif"></a>
+			<a href="./question_list.php"><img src="./material/star.gif"></a>
 		</span>
 		
 		<span class="icon">
