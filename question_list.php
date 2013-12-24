@@ -23,7 +23,7 @@ while ($row = mysql_fetch_assoc($result)) {
 
 $i = 0;
 while ($i < count($question_list)) {
-	echo '■設問'.$question_list[$i]->question_id.'<br><hr><br>'.$question_list[$i]->question_title.'<br><img src="./images/'.$question_list[$i]->img_url[0].'">'.'<br><img src="./images/'.$question_list[$i]->img_url[1].'">'.'<hr>';
+		echo '■設問'.$question_list[$i]->question_id.'<br><hr><br>'.$question_list[$i]->question_title.'<br><img src="./images/'.$question_list[$i]->img_url[0].'">'.'<br><img src="./images/'.$question_list[$i]->img_url[1].'">'.'<hr>';
 	$i++;
 }
 ?>

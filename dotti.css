@@ -99,7 +99,7 @@ input[type="submit"] {
 	border-radius:8px;
 	border:1px solid #dcdcdc;
 	padding:9px 18px;
-	margin:0 0 20px 20px;
+	margin: 0 auto;
 	text-decoration:none;
 	background:-webkit-gradient( linear, left top, left bottom, color-stop(5%, #ededed), color-stop(100%, #dfdfdf) );
 	background:-moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
@@ -126,5 +126,57 @@ input[type="submit"] {
 	width:25%;
 	padding:4px 10px 4px 10px;
 }
+
+/* ----------------------------------------
+
+　設問のレイアウト設定
+
+---------------------------------------- */ 
+
+/* 設問の汎用ボックス */
+.question_box {
+	margin:0 auto;
+	width:300px;
+	clear:both;"
+}
+.question_left {
+	margin:0 auto;
+	width:150px;
+	float:left;"
+}
+.question_right {
+	margin:0 auto;
+	width:150px;
+	float:left;
+}
+/* 設問のボタン */
+form.question_button {
+	margin:0 auto;
+	width:100px;
+}
+/* 設問の画像 */
+.question_image {
+	border:1px solid #555555;
+}
+/* 設問のタイトル */
+.question_title{
+	text-align:center;
+	border:black;
+	margin:0 auto;
+	width:auto;
+	font-size:3.5em;
+}
+/* 設問の割合バー */
+.question_bar_left{
+	text-align:center;
+	float:left;
+	background-color:red;
+}
+.question_bar_right{
+	text-align:center;
+	float:left;
+	background-color:blue;
+}
+
 
 </style>

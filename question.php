@@ -5,16 +5,37 @@ include './include/header.php';
 
 ?>
 <br>
-■設問
 <?php
 if (isset($_GET['question_id'])) {
 	$question_id = $_GET['question_id'];
 	$question = new question($question_id);
 	
 	if (isset($question->question_id)) {
+?>
+	<div class="question_title">
+		<?php echo $question->question_title;?>
+	</div>
 	
-		echo '■設問<br><hr>'.$question->question_id.'<br>'.$question->question_title.'<br><img src="./images/'.$question->img_url[0].'">'.'<br><img src="./images/'.$question->img_url[1].'">'.'<hr>';
+	<div class="question_box">
+		<div class="question_left">
+			<img class="question_image" src="./images/<?php echo $question->img_url[0]; ?>" width="150px">
+		</div>
+		<div class="question_right">
+			<img class="question_image" src="./images/<?php echo $question->img_url[1]; ?>" width="150px">
+		</div>
+	</div>
 	
+	<div class="question_box">
+		<div class="question_bar_left" style="width:<?php echo ($question->answer_ratio['0']*3); ?>px;">
+		<?php echo $question->answer_count['0']?>
+		</div>
+		<div class="question_bar_right" style="width:<?php echo ($question->answer_ratio['1']*3); ?>px;">
+		<?php echo $question->answer_count['1']?>
+		</div>
+	</div>
+<?php	
+//		echo '■設問<br><hr>'.$question->question_id.'<br>'.$question->question_title.'<br><img src="./images/'.$question->img_url[0].'">'.'<br><img src="./images/'.$question->img_url[1].'">'.'<hr>';
+
 		// 投票済みチェック
 	
 		if (isset($user_id)) {
@@ -33,7 +54,7 @@ if (isset($_GET['question_id'])) {
 			}
 			
 			if ($answer) {
-				echo "すでに".$post_answer."に投票済みです<br>";
+				echo "<p class='question_box'>すでに".$post_answer."に投票済みです</p>";
 			}
 			
 			// まだ投票してなくて、投票がPOSTされていれば投票処理
@@ -45,19 +66,29 @@ if (isset($_GET['question_id'])) {
 				}elseif ($_POST["answer"] == 1){
 					$post_answer = "B";
 				}
-				echo $post_answer."に投票しました！<br>";
+				echo "<p class='question_box'>".$post_answer."に投票しました！</p>";
 			}elseif (!$answer){
 			// まだ投票してないので投票ボタン表示
 	?>
-				<form action="?question_id=<?php echo $_GET['question_id']?>" method="POST">
-				<input type="hidden" name="answer" value="0">
-				<input type="submit" value="A" />
-				</form>
-	
-				<form action="?question_id=<?php echo $_GET['question_id']?>" method="POST">
-				<input type="hidden" name="answer" value="1">
-				<input type="submit" value="B" />
-				</form>
+	<br>
+	<br>
+	<div class="question_box">
+
+		<div class="question_left">
+			<form class="question_button" action="?question_id=<?php echo $_GET['question_id']?>" method="POST">
+			<input type="hidden" name="answer" value="0">
+			<input type="submit" value="Aに投票" />
+			</form>
+		</div>
+
+		<div class="question_right">
+			<form class="question_button" action="?question_id=<?php echo $_GET['question_id']?>" method="POST">
+			<input type="hidden" name="answer" value="1">
+			<input type="submit" value="Bに投票" />
+			</form>
+		</div>
+		
+	</div>
 	<?php
 			}
 	
