@@ -25,11 +25,11 @@ $name = array();
 $upload_key   = 'upfile';
 $image_dir    = 'images';
 $thumb_dir    = 'thumbs';
-$max_filesize = 50000;
-$max_width    = 100;
-$max_height   = 100;
-$thumb_width  = 32;
-$thumb_height = 32;
+$max_filesize = 1048576; // 1メガバイト 
+$max_width    = 600;
+$max_height   = 600;
+$thumb_width  = 150;
+$thumb_height = 150;
 
 /* 処理 */
 		

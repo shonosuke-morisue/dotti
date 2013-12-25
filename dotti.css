@@ -137,6 +137,7 @@ input[type="submit"] {
 .question_box {
 	margin:0 auto;
 	width:300px;
+	text-align:center;
 	clear:both;"
 }
 .question_left {
@@ -164,17 +165,17 @@ form.question_button {
 	border:black;
 	margin:0 auto;
 	width:auto;
-	font-size:3.5em;
+	font-size:2em;
 }
 /* ê›ñ‚ÇÃäÑçáÉoÅ[ */
 .question_bar_left{
-	text-align:center;
 	float:left;
+	height:20px;
 	background-color:red;
 }
 .question_bar_right{
-	text-align:center;
 	float:left;
+	height:20px;
 	background-color:blue;
 }
 

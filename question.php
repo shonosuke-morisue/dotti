@@ -26,11 +26,15 @@ if (isset($_GET['question_id'])) {
 	</div>
 	
 	<div class="question_box">
+		A投票数:[<?php echo $question->answer_count['0']?>] <=> B投票数:[<?php echo $question->answer_count['1']?>]
+	</div>
+	
+	<div class="question_box">
 		<div class="question_bar_left" style="width:<?php echo ($question->answer_ratio['0']*3); ?>px;">
-		<?php echo $question->answer_count['0']?>
+		<?php // echo $question->answer_count['0']?>
 		</div>
 		<div class="question_bar_right" style="width:<?php echo ($question->answer_ratio['1']*3); ?>px;">
-		<?php echo $question->answer_count['1']?>
+		<?php // echo $question->answer_count['1']?>
 		</div>
 	</div>
 <?php	

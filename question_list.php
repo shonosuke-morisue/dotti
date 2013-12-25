@@ -23,7 +23,25 @@ while ($row = mysql_fetch_assoc($result)) {
 
 $i = 0;
 while ($i < count($question_list)) {
-		echo '■設問'.$question_list[$i]->question_id.'<br><hr><br>'.$question_list[$i]->question_title.'<br><img src="./images/'.$question_list[$i]->img_url[0].'">'.'<br><img src="./images/'.$question_list[$i]->img_url[1].'">'.'<hr>';
+?>
+	
+	<div class="question_title">
+		<a href="./question.php?question_id='<?php echo $question_list[$i]->question_id;?>'"><?php echo $question_list[$i]->question_title;?></a>
+	</div>
+	
+	<div class="question_box">
+		<div class="question_left">
+			<img class="question_image" src="./images/<?php echo $question_list[$i]->img_url[0]; ?>" width="150px">
+		</div>
+		<div class="question_right">
+			<img class="question_image" src="./images/<?php echo $question_list[$i]->img_url[1]; ?>" width="150px">
+		</div>
+	</div>
+	<div class="question_box">
+		<hr>
+	</div>
+	
+<?php
 	$i++;
 }
 ?>
