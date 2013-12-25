@@ -42,6 +42,9 @@ function db_close($link) {
 //DB接続エラー
 function db_error($result) {
 	if (!$result) {
+		//文字コードをutf8に設定
+		mysql_set_charset('utf8');
+		
 		die('クエリーが失敗しました。'.mysql_error());
 	}
 }

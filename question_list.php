@@ -8,9 +8,42 @@ include './include/header.php';
 // DBに接続
 $link = db_access();
 
-// 新規設問を取得
-$result = mysql_query('SELECT * FROM question ORDER BY question_id DESC LIMIT 5;');
-db_error($result);
+switch (true) {
+	case (isset($_POST["question_popularity"])):
+		// 人気（投票数が多い）設問を取得
+		$result = mysql_query('SELECT question_id FROM question ORDER BY answer_count_0 + answer_count_1 DESC LIMIT 5;');
+		db_error($result);
+		$list_title = "人気投稿";
+	break;
+
+	case (isset($_POST["vote_new"])):
+		// 最近投票された設問を取得
+		$result = mysql_query('SELECT DISTINCT question_id FROM answer ORDER BY time DESC LIMIT 5;');
+		db_error($result);
+		$list_title = "新着投票";
+	break;
+
+	case (isset($_POST["question_mine"])):
+		// 自分が投稿した設問を取得
+		$result = mysql_query('SELECT question_id FROM question WHERE user_id = "'.$user_id.'" ORDER BY question_id DESC LIMIT 5;');
+		db_error($result);
+		$list_title = "自分投稿";
+	break;
+
+	case (isset($_POST["answer_mine"])):
+		// 自分が投票した設問を取得
+		$result = mysql_query('SELECT question_id FROM answer WHERE user_id = "'.$user_id.'" ORDER BY time DESC LIMIT 5;');
+		db_error($result);
+		$list_title = "自分投票";
+	break;
+
+	default:
+		// 新規設問を取得
+		$result = mysql_query('SELECT question_id FROM question ORDER BY question_id DESC LIMIT 5;');
+		db_error($result);
+		$list_title = "新着投稿";
+	break;
+}
 
 //DB切断処理
 db_close($link);
@@ -20,7 +53,38 @@ while ($row = mysql_fetch_assoc($result)) {
 	$question = new question($row["question_id"]);
 	$question_list[] = $question;
 }
+?>
 
+<!-- 
+新着投稿　->　新しく投稿された設問
+人気　->　投票数多い
+新着投票　->　最近投票された
+-->
+
+
+<form action="question_list.php" method="POST">
+<input type="submit" name="question_new" value="新着投稿" />
+</form>
+  
+<form action="question_list.php" method="POST">
+<input type="submit" name="question_popularity" value="人気" />
+</form>
+
+<form action="question_list.php" method="POST">
+<input type="submit" name="vote_new" value="新着投票" />
+</form>
+
+<form action="question_list.php" method="POST">
+<input type="submit" name="question_mine" value="自分投稿" />
+</form>
+
+<form action="question_list.php" method="POST">
+<input type="submit" name="answer_mine" value="自分投票" />
+</form>
+
+<h1><?php echo $list_title;?></h1>
+<hr>
+<?php
 $i = 0;
 while ($i < count($question_list)) {
 ?>

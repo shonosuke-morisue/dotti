@@ -169,8 +169,8 @@ if (isset($title) && isset($_FILES[$upload_key])) {
     	//日付の取得
     	$datetime = date("Y-m-d H:i:s");
     	
-    	//userへデータの登録
-    	$entry = mysql_query('INSERT INTO question( question_title , contributor , img_url_0 , img_url_1 , time ) VALUES ( "'.$title.'","'.$user_id.'","'.$name[0].'","'.$name[1].'","'.$datetime.'" );');
+    	//userへ設問データの登録
+    	$entry = mysql_query('INSERT INTO question( question_title , user_id , img_url_0 , img_url_1 , time ) VALUES ( "'.$title.'","'.$user_id.'","'.$name[0].'","'.$name[1].'","'.$datetime.'" );');
     
         if (db_error($entry)) {
             throw new RuntimeException(db_error($entry));
@@ -209,7 +209,7 @@ if (isset($title) && isset($_FILES[$upload_key])) {
 <form enctype="multipart/form-data" method="post" action="">
       <fieldset>
         <legend>画像ファイルを選択(JPEG, GIF, PNGのみ対応)</legend>
-        <label>■タイトル<br><input type="text" name="title" size="10" maxlength="140" value="どっちが好き？" placeholder="お題を入力してください" required></label><br>
+        <label>■タイトル<br><input type="text" name="title" size="10" maxlength="140" value="どっちが○○？" placeholder="お題を入力してください" required></label><br>
         <label>■投稿画像１<br><input type="file" name="upfile[]" required></label><br>
         <label>■投稿画像２<br><input type="file" name="upfile[]" required></label><br>
         <label><input type="submit" value="送信"></label>

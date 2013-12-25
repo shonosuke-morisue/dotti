@@ -30,12 +30,33 @@ if (isset($_GET['question_id'])) {
 	</div>
 	
 	<div class="question_box">
-		<div class="question_bar_left" style="width:<?php echo ($question->answer_ratio['0']*3); ?>px;">
-		<?php // echo $question->answer_count['0']?>
+<?php
+	switch (0) {
+		case $question->answer_ratio['0']:
+?>
+		<div class="question_bar_right_only">
 		</div>
-		<div class="question_bar_right" style="width:<?php echo ($question->answer_ratio['1']*3); ?>px;">
-		<?php // echo $question->answer_count['1']?>
+<?php
+			
+		break;
+	
+		case $question->answer_ratio['1']:
+?>
+		<div class="question_bar_left_only">
 		</div>
+<?php
+		break;
+		
+		default:
+?>
+		<div class="question_bar_left" style="width:<?php echo ($question->answer_ratio['0']*3-1); ?>px;">
+		</div>
+		<div class="question_bar_right" style="width:<?php echo ($question->answer_ratio['1']*3-1); ?>px;">
+		</div>
+<?php
+		break;
+	}
+?>
 	</div>
 <?php	
 //		echo '■設問<br><hr>'.$question->question_id.'<br>'.$question->question_title.'<br><img src="./images/'.$question->img_url[0].'">'.'<br><img src="./images/'.$question->img_url[1].'">'.'<hr>';
@@ -99,9 +120,11 @@ if (isset($_GET['question_id'])) {
 		}else {
 	//ログインしてない場合は、ログインに誘導
 	?>
+	<div class="question_box">
 			投票したい場合はログインしてください。
 			<br>
 			<a href="<?php print($sUrl);?>">Twitterアカウントでログイン</a><br>
+	</div>
 	<?php
 	
 		}
