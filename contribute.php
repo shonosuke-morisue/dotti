@@ -162,22 +162,19 @@ if (isset($title) && isset($_FILES[$upload_key])) {
 
     	}
     	
-    	//db登録処理
-    	$link = db_access();
     	//タイムゾーンの設定
     	date_default_timezone_set('Asia/Tokyo');
     	//日付の取得
     	$datetime = date("Y-m-d H:i:s");
     	
-    	//userへ設問データの登録
-    	$entry = mysql_query('INSERT INTO question( question_title , user_id , img_url_0 , img_url_1 , time ) VALUES ( "'.$title.'","'.$user_id.'","'.$name[0].'","'.$name[1].'","'.$datetime.'" );');
-    
-        if (db_error($entry)) {
-            throw new RuntimeException(db_error($entry));
-        }
-
+    	//db登録処理
+    	$db_link = db_access();
+    	//questionへ設問データの登録
+    	$sql = 'INSERT INTO question( question_title , user_id , img_url_0 , img_url_1 , time ) VALUES ( "'.$title.'","'.$user_id.'","'.$name[0].'","'.$name[1].'","'.$datetime.'" )';
+    	$result = $db_link->query($sql);
+    	
     	//DB切断処理
-    	db_close($link);
+    	db_close($db_link);
     	$question = true;
     	
     } catch (Exception $e) {

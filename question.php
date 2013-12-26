@@ -59,18 +59,20 @@ if (isset($_GET['question_id'])) {
 ?>
 	</div>
 <?php	
-//		echo '■設問<br><hr>'.$question->question_id.'<br>'.$question->question_title.'<br><img src="./images/'.$question->img_url[0].'">'.'<br><img src="./images/'.$question->img_url[1].'">'.'<hr>';
-
 		// 投票済みチェック
 	
 		if (isset($user_id)) {
 			// DBに接続
-			$link = db_access();
-	
+			$db_link = db_access();
+							
 			// 投票状況を取得
-			$result = mysql_query('SELECT * FROM answer WHERE question_id = "'.$question->question_id.'" AND user_id = "'.$user_id.'";');
-			db_error($result);
-			$answer = mysql_fetch_assoc($result);
+			$sql = 'SELECT * FROM answer WHERE question_id = "'.$question->question_id.'" AND user_id = "'.$user_id.'"';
+			$result = $db_link->query($sql);
+
+			//DB切断処理
+			db_close($db_link);
+				
+			$answer = $result->fetch();
 	
 			if ($answer["answer"] == 0) {
 				$post_answer = "A";

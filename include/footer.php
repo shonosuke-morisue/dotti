@@ -17,7 +17,7 @@
 		</span>
 		
 		<span class="icon">
-			<img src="./material/home.gif">
+			<a href="./mypage.php"><img src="./material/home.gif"></a>
 		</span>
 
 		<span class="icon">

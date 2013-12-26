@@ -5,36 +5,6 @@ include './include/db_access.php';
 include './include/header.php';
 
 
-$user = new user();
-
-class user {
-
-	private function get_user() {
-		// DBからユーザー情報を取得
-		$link = db_access();
-		$result = mysql_query('SELECT * FROM user WHERE id = "'.$user_id.'";');
-		db_error($result);
-		$user = mysql_fetch_assoc($result);
-
-		// DB切断処理
-		db_close($link);
-	}
-}
-
-class chara{
-
-	private function get_chara($id) {
-		// DBからユーザー情報を取得
-		$link = db_access();
-		$result = mysql_query('SELECT * FROM charactor WHERE id = "'.$id.'";');
-		db_error($result);
-		$chara = mysql_fetch_assoc($result);
-
-		// DB切断処理
-		db_close($link);
-	}
-}
-
 echo "ID:".$user_id."<br>";
 
 ?>

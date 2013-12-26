@@ -10,12 +10,12 @@ class question {
 	// 設問の初期化
 	function __construct($question_id) {
 		// DBに接続
-		$link = db_access();
-		// DBから設問の情報を取得する
-		$result = mysql_query('SELECT * FROM question WHERE question_id = '.$question_id.';');
-		db_error($result);
-		$question = mysql_fetch_assoc($result);
+		$db_link = db_access();
+		$sql = 'SELECT * FROM question WHERE question_id = '.$question_id;
+		$result = $db_link->query($sql);
 
+		$question = $result->fetch();
+		
 		// 設問の各種情報を変数に格納
 		$this->question_id = $question['question_id'];
 		$this->question_title = $question['question_title'];
@@ -28,16 +28,14 @@ class question {
 		$this->answer_ratio[1] = $question['answer_ratio_1'];
 
     	//DB切断処理
-    	db_close($link);
+    	db_close($db_link);
 	}
 
 	// 投票処理
 	function answer($answer , $user_id) {
 		// DBに接続
-		$link = db_access();
-		// 投票をDBに登録
-		$result = mysql_query('INSERT INTO answer( user_id , question_id , answer , answer_msg ) VALUES ("'.$user_id.'","'.$this->question_id.'","'.$answer.'","");');
-		db_error($result);
+		$db_link = db_access();
+		$sql = 'INSERT INTO answer( user_id , question_id , answer , answer_msg ) VALUES ("'.$user_id.'","'.$this->question_id.'","'.$answer.'","")';
 
 		// 投票数に+1する
 		if ($answer == 0) {
@@ -63,17 +61,16 @@ class question {
 		}
 
 		// DBの投票数、投票比率を更新
-		$result = mysql_query('UPDATE question SET
+		$result = $db_link->query('UPDATE question SET
 				 answer_count_0 ='.$this->answer_count[0].',
 				 answer_ratio_0 ='.$this->answer_ratio[0].',
 				 answer_count_1 ='.$this->answer_count[1].',
 				 answer_ratio_1 ='.$this->answer_ratio[1].'
 				 WHERE
-				 question_id = '.$this->question_id.';');
-		db_error($result);
+				 question_id = '.$this->question_id);
 
     	//DB切断処理
-    	db_close($link);
+    	db_close($db_link);
 	}
 }
 ?>

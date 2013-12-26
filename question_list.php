@@ -6,50 +6,50 @@ include './include/header.php';
 <br>
 <?php
 // DBに接続
-$link = db_access();
+$db_link = db_access();
 
 switch (true) {
 	case (isset($_POST["question_popularity"])):
 		// 人気（投票数が多い）設問を取得
-		$result = mysql_query('SELECT question_id FROM question ORDER BY answer_count_0 + answer_count_1 DESC LIMIT 5;');
-		db_error($result);
+		$sql = 'SELECT question_id FROM question ORDER BY answer_count_0 + answer_count_1 DESC LIMIT 5';
+		$result = $db_link->query($sql);
 		$list_title = "人気投稿";
 	break;
 
 	case (isset($_POST["vote_new"])):
 		// 最近投票された設問を取得
-		$result = mysql_query('SELECT DISTINCT question_id FROM answer ORDER BY time DESC LIMIT 5;');
-		db_error($result);
+		$sql = 'SELECT DISTINCT question_id FROM answer ORDER BY time DESC LIMIT 5';
+		$result = $db_link->query($sql);
 		$list_title = "新着投票";
 	break;
 
 	case (isset($_POST["question_mine"])):
 		// 自分が投稿した設問を取得
-		$result = mysql_query('SELECT question_id FROM question WHERE user_id = "'.$user_id.'" ORDER BY question_id DESC LIMIT 5;');
-		db_error($result);
+		$sql = 'SELECT question_id FROM question WHERE user_id = "'.$user_id.'" ORDER BY question_id DESC LIMIT 5';
+		$result = $db_link->query($sql);
 		$list_title = "自分投稿";
 	break;
 
 	case (isset($_POST["answer_mine"])):
 		// 自分が投票した設問を取得
-		$result = mysql_query('SELECT question_id FROM answer WHERE user_id = "'.$user_id.'" ORDER BY time DESC LIMIT 5;');
-		db_error($result);
+		$sql = 'SELECT question_id FROM answer WHERE user_id = "'.$user_id.'" ORDER BY time DESC LIMIT 5';
+		$result = $db_link->query($sql);
 		$list_title = "自分投票";
 	break;
 
 	default:
 		// 新規設問を取得
-		$result = mysql_query('SELECT question_id FROM question ORDER BY question_id DESC LIMIT 5;');
-		db_error($result);
+		$sql = 'SELECT question_id FROM question ORDER BY question_id DESC LIMIT 5';
+		$result = $db_link->query($sql);
 		$list_title = "新着投稿";
 	break;
 }
 
 //DB切断処理
-db_close($link);
+db_close($db_link);
 
 $question_list = array();
-while ($row = mysql_fetch_assoc($result)) {
+while ($row = $result->fetch()) {
 	$question = new question($row["question_id"]);
 	$question_list[] = $question;
 }

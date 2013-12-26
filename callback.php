@@ -53,12 +53,12 @@ $_SESSION['profile_image_url'] = $oObj->{'profile_image_url'};
 //-------------------------
 
 //DBからユーザー情報を取得
-$link = db_access();
-$result = mysql_query('SELECT * FROM user WHERE user_id = "'.$_SESSION['user_id'].'";');
+$db_link = db_access();
+$sql = 'SELECT * FROM user WHERE user_id = "'.$_SESSION['user_id'].'"';
+$result = $db_link->query($sql);
 
-db_error($result);
+$user = $result->fetch();
 
-$user = mysql_fetch_assoc($result);
 // ユーザー名を確認して未登録の場合は新規登録する。
 if (!$_SESSION['user_id'] == $user["user_id"]) {
 	//タイムゾーンの設定
@@ -66,17 +66,16 @@ if (!$_SESSION['user_id'] == $user["user_id"]) {
 	//日付の取得
 	$datetime = date("Y-m-d H:i:s");
 	//userテーブルへユーザーデータの登録
-	$entry = mysql_query('INSERT INTO user( user_id , screen_name , name , profile_image_url ,time ) VALUES ( "'.$_SESSION['user_id'].'","'.$_SESSION['screen_name'].'","'.$_SESSION['name'].'","'.$_SESSION['profile_image_url'].'","'.$datetime.'" );');
-	db_error($entry);
+	$sql = 'INSERT INTO user( user_id , screen_name , name , profile_image_url ,time ) VALUES ( "'.$_SESSION['user_id'].'","'.$_SESSION['screen_name'].'","'.$_SESSION['name'].'","'.$_SESSION['profile_image_url'].'","'.$datetime.'" )';
+	$result = $db_link->query($sql);
 }
 
 //userテーブルへユーザーデータの更新
-$entry = mysql_query('UPDATE user SET screen_name = "'.$_SESSION["screen_name"].'", name ="'.$_SESSION["name"].'", profile_image_url="'.$_SESSION["profile_image_url"].'"  WHERE user_id = "'.$_SESSION["user_id"].'";');
-db_error($entry);
-
+$sql = 'UPDATE user SET screen_name = "'.$_SESSION["screen_name"].'", name ="'.$_SESSION["name"].'", profile_image_url="'.$_SESSION["profile_image_url"].'"  WHERE user_id = "'.$_SESSION["user_id"].'"';
+$result = $db_link->query($sql);
 
 //DB切断処理
-db_close($link);
+db_close($db_link);
 
 
 // loginページへリダイレクト
