@@ -31,9 +31,13 @@ require_once './twitteroauth/twitteroauth.php';
 // DBアクセス処理
 require_once './include/db_access.php';
 
-// 設問情報取得クラス
-require_once './include/question.php';
-
+// クラスオートロード処理
+function __autoload($class_name) {
+	$file = './class/'.$class_name.'.php';
+	if (is_readable($file)) {
+		require_once $file;
+	}
+}
 
 // ユーザーidの確認
 if (isset($_SESSION["user_id"])) {

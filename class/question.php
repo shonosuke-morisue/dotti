@@ -1,8 +1,13 @@
 <?php
+//----------------------------------------
+// 設問の情報を取得、処理するクラス
+// ・設問の情報の取得
+// ・投票処理
+//----------------------------------------
 class question {
 	public $question_id;
 	public $question_title;
-	public $contributor;
+	public $user_id;
 	public $img_url = array();
 	public $answer_count = array();
 	public $answer_ratio = array();
@@ -19,7 +24,7 @@ class question {
 		// 設問の各種情報を変数に格納
 		$this->question_id = $question['question_id'];
 		$this->question_title = $question['question_title'];
-		$this->contributor = $question['contributor'];
+		$this->user_id = $question['user_id'];
 		$this->img_url[0] = $question['img_url_0'];
 		$this->answer_count[0] = $question['answer_count_0'];
 		$this->answer_ratio[0] = $question['answer_ratio_0'];
@@ -36,7 +41,8 @@ class question {
 		// DBに接続
 		$db_link = db_access();
 		$sql = 'INSERT INTO answer( user_id , question_id , answer , answer_msg ) VALUES ("'.$user_id.'","'.$this->question_id.'","'.$answer.'","")';
-
+		$db_link->query($sql);
+		
 		// 投票数に+1する
 		if ($answer == 0) {
 			$this->answer_count[0] = $this->answer_count[0] + 1 ;

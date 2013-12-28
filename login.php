@@ -1,8 +1,5 @@
 <?php
 require_once './include/session.php';
-require_once './include/db_access.php';
-// OAuth用ライブラリ「twitteroauth」
-require_once './twitteroauth/twitteroauth.php';
 
 include './include/header.php';
 

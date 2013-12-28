@@ -1,53 +1,54 @@
 <?php
-include './include/session.php';
-include './include/db_access.php';
+require_once './include/session.php';
+
+if (isset($_GET['user_id'])) {
+	$user_id = $_GET['user_id'];
+}elseif (!isset($_SESSION['user_id'])){
+	header("Location: http://morisue.sakura.ne.jp/dotti/login.php");
+}
 
 include './include/header.php';
 
-
 echo "ID:".$user_id."<br>";
+$user = new user($user_id);
 
+//OAuthオブジェクトを生成する
+$twObj = new TwitterOAuth(ConsumerKey,ConsumerSecret,$_SESSION["oauth_token"],$_SESSION["oauth_token_secret"]);
+//ユーザー情報を取得するAPIを利用。Twitterからjson形式でデータが返ってくる
+$vRequest = $twObj->OAuthRequest("https://api.twitter.com/1.1/users/show.json","GET",array("user_id"=>$user->user_id,"screen_name"=>$user->screen_name));
+//Jsonデータをオブジェクトに変換
+$oObj = json_decode($vRequest);
+
+$profile_image_url_bigger = str_replace("image_normal","image_bigger",$oObj->{'profile_image_url'});
 ?>
 <hr>
-名前：<br>
-HP：<br>
-スタミナ：<br>
-<hr>
-攻撃力：<br>
-属性：<br>
-<hr>
-防御力：<br>
-火耐性：<br>
-水耐性：<br>
-雷耐性：<br>
-氷耐性：<br>
-龍耐性：<br>
-<hr>
-武器：<br>
-頭防具：<br>
-胴防具：<br>
-腕防具：<br>
-腰防具：<br>
-脚防具：<br>
-<hr>
-発動スキル1：<br>
-発動スキル2：<br>
-発動スキル3：<br>
-発動スキル4：<br>
-発動スキル5：<br>
 
-<hr>
+<div class="">
+	<a href="https://twitter.com/<?php echo $oObj->{'screen_name'};?>"><img src="<?php echo $profile_image_url_bigger;?>"></a><br>
+	<a href="https://twitter.com/<?php echo $oObj->{'screen_name'};?>"><?php echo $oObj->{'screen_name'};?></a><br>
+</div>
+<div class="">
+	<?php echo $oObj->{'name'};?><br>
+</div>
+<div class="">
+	<?php echo $oObj->{'description'};?><br>
+</div>
 
-<form action="logout.php" method="POST">
-<input type="submit" name="logout" value="ログアウト" />
+<!-- twitterフォローボタン -->
+<a href="https://twitter.com/<?php echo $oObj->{'screen_name'};?>" class="twitter-follow-button" data-show-count="false" data-size="large">Follow @<?php echo $oObj->{'screen_name'};?></a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+<br>
+
+<form action="question_list.php" method="POST">
+<input type="submit" name="question_mine" value="自分投稿" />
 </form>
 
+<form action="question_list.php" method="POST">
+<input type="submit" name="answer_mine" value="自分投票" />
+</form>
+
+
 <hr>
-
-<a href="./login.php">ログインページ</a><br>
-<a href="./logout.php">ログアウトページ</a><br>
-<a href="./mypage.php">リザルトページ</a><br>
-
 
 <?php
 include './include/footer.php';

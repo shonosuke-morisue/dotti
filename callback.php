@@ -52,15 +52,18 @@ $_SESSION['profile_image_url'] = $oObj->{'profile_image_url'};
 //DBのユーザー情報と比較
 //-------------------------
 
-//DBからユーザー情報を取得
+//ユーザー情報を取得
+$user = new user($_SESSION['user_id']);
+
 $db_link = db_access();
-$sql = 'SELECT * FROM user WHERE user_id = "'.$_SESSION['user_id'].'"';
-$result = $db_link->query($sql);
 
-$user = $result->fetch();
-
-// ユーザー名を確認して未登録の場合は新規登録する。
-if (!$_SESSION['user_id'] == $user["user_id"]) {
+// ユーザー名を確認して未登録の場合は新規登録、登録済みの場合はデータを更新する。
+if ($_SESSION['user_id'] == $user->user_id) {
+	// userテーブルへユーザーデータの更新
+	// 最新のデータに更新する必要があるので、必ずtwitterAPIから取得したデータをUPDATEすること
+	$sql = 'UPDATE user SET screen_name = "'.$_SESSION["screen_name"].'", name ="'.$_SESSION["name"].'", profile_image_url="'.$_SESSION["profile_image_url"].'"  WHERE user_id = "'.$_SESSION["user_id"].'"';
+	$result = $db_link->query($sql);
+}else{
 	//タイムゾーンの設定
 	date_default_timezone_set('Asia/Tokyo');
 	//日付の取得
@@ -70,9 +73,6 @@ if (!$_SESSION['user_id'] == $user["user_id"]) {
 	$result = $db_link->query($sql);
 }
 
-//userテーブルへユーザーデータの更新
-$sql = 'UPDATE user SET screen_name = "'.$_SESSION["screen_name"].'", name ="'.$_SESSION["name"].'", profile_image_url="'.$_SESSION["profile_image_url"].'"  WHERE user_id = "'.$_SESSION["user_id"].'"';
-$result = $db_link->query($sql);
 
 //DB切断処理
 db_close($db_link);
