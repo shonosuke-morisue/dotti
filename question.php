@@ -7,7 +7,8 @@ include './include/header.php';
 <br>
 <?php
 if (isset($_GET['question_id'])) {
-	$question_id = $_GET['question_id'];
+	
+	$question_id = $_GET['question_id'];	
 	$question = new question($question_id);
 	$question_owner = new user($question->user_id);
 	
@@ -73,13 +74,15 @@ if (isset($_GET['question_id'])) {
 			$db_link = db_access();
 							
 			// 投票状況を取得
-			$sql = 'SELECT * FROM answer WHERE question_id = "'.$question->question_id.'" AND user_id = "'.$user_id.'"';
-			$result = $db_link->query($sql);
+			$sth = $db_link->prepare('SELECT * FROM answer WHERE question_id = :question_id AND user_id = :user_id');
+			$sth->bindValue(':question_id' , $question->question_id , PDO::PARAM_INT);
+			$sth->bindValue(':user_id' , $user_id , PDO::PARAM_INT);
+			$sth->execute();
 	
 			//DB切断処理
 			db_close($db_link);
 				
-			$answer = $result->fetch();
+			$answer = $sth->fetch();
 	
 			if ($answer["answer"] == 0) {
 				$post_answer = "A";
@@ -92,7 +95,7 @@ if (isset($_GET['question_id'])) {
 			}
 			
 			// まだ投票してなくて、投票がPOSTされていれば投票処理
-			if (!$answer && isset($_POST["answer"])) {
+			if (!$answer && ( $_POST["answer"] == 0 || $_POST["answer"] == 1 )) {
 				$question->answer($_POST["answer"], $user_id) ;
 				
 				if ($_POST["answer"] == 0) {
@@ -150,11 +153,13 @@ if (isset($_GET['question_id'])) {
 <?php
 // 最近投票したユーザーを取得してリストアップ
 $db_link = db_access();
-$sql = 'SELECT user_id FROM answer WHERE question_id = "'.$question->question_id.'" ORDER BY time DESC LIMIT 5';
-$result = $db_link->query($sql);
+
+$sth = $db_link->prepare('SELECT user_id FROM answer WHERE question_id = :question_id ORDER BY time DESC LIMIT 5');
+$sth->bindValue(':question_id' , $question->question_id , PDO::PARAM_INT);
+$sth->execute();
 
 $answer_list = array();
-while ($row = $result->fetch()) {
+while ($row = $sth->fetch()) {
 	$user = new user($row['user_id']);
 	if (!$user->screen_name == null) {
 		?>

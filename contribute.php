@@ -20,7 +20,10 @@ include './include/header.php';
 
 
 /* 設定 */
-$title   = $_POST["title"];
+$title = "未入力";
+if ( isset($_POST["title"]) || is_string($_POST["title"])) {
+	$title = $_POST["title"];
+};
 $name = array();
 $upload_key   = 'upfile';
 $image_dir    = 'images';
@@ -170,9 +173,14 @@ if (isset($title) && isset($_FILES[$upload_key])) {
     	//db登録処理
     	$db_link = db_access();
     	//questionへ設問データの登録
-    	$sql = 'INSERT INTO question( question_title , user_id , img_url_0 , img_url_1 , time ) VALUES ( "'.$title.'","'.$user_id.'","'.$name[0].'","'.$name[1].'","'.$datetime.'" )';
-    	$result = $db_link->query($sql);
-    	
+		$sth = $db_link->prepare('INSERT INTO question( question_title , user_id , img_url_0 , img_url_1 , time ) VALUES ( :title , :user_id , :name_0 , :name_1 , :datetime )');
+		$sth->bindValue(':title' , $title , PDO::PARAM_STR );
+		$sth->bindValue(':user_id' , $user_id , PDO::PARAM_INT );
+		$sth->bindValue(':name_0' , $name[0] , PDO::PARAM_STR );
+		$sth->bindValue(':name_1' , $name[1] , PDO::PARAM_STR );
+		$sth->bindValue(':datetime' , $datetime , PDO::PARAM_INT );
+		$sth->execute();
+		    	
     	//DB切断処理
     	db_close($db_link);
     	$question = true;

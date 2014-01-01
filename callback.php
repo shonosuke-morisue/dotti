@@ -61,16 +61,45 @@ $db_link = db_access();
 if ($_SESSION['user_id'] == $user->user_id) {
 	// userテーブルへユーザーデータの更新
 	// 最新のデータに更新する必要があるので、必ずtwitterAPIから取得したデータをUPDATEすること
-	$sql = 'UPDATE user SET screen_name = "'.$_SESSION["screen_name"].'", name ="'.$_SESSION["name"].'", profile_image_url="'.$_SESSION["profile_image_url"].'"  WHERE user_id = "'.$_SESSION["user_id"].'"';
-	$result = $db_link->query($sql);
+	$sth = $db_link->prepare('UPDATE user SET
+		screen_name       = :screen_name , 
+		name              = :name ,
+		profile_image_url = :profile_image_url
+		WHERE
+		user_id = :user_id
+	');
+	$sth->bindValue(':screen_name' , $_SESSION["screen_name"] , PDO::PARAM_STR);
+	$sth->bindValue(':name' , $_SESSION["name"] , PDO::PARAM_STR);
+	$sth->bindValue(':profile_image_url' , $_SESSION["profile_image_url"] , PDO::PARAM_STR);
+	$sth->bindValue(':user_id' , $_SESSION["user_id"] , PDO::PARAM_INT);
+	$sth->execute();
 }else{
 	//タイムゾーンの設定
 	date_default_timezone_set('Asia/Tokyo');
 	//日付の取得
 	$datetime = date("Y-m-d H:i:s");
 	//userテーブルへユーザーデータの登録
-	$sql = 'INSERT INTO user( user_id , screen_name , name , profile_image_url ,time ) VALUES ( "'.$_SESSION['user_id'].'","'.$_SESSION['screen_name'].'","'.$_SESSION['name'].'","'.$_SESSION['profile_image_url'].'","'.$datetime.'" )';
-	$result = $db_link->query($sql);
+	$sth = $db_link->prepare('INSERT INTO user( 
+			user_id ,
+			screen_name ,
+			name ,
+			profile_image_url ,
+			time
+		) VALUES ( 
+			:user_id , 
+			:screen_name , 
+			:name , 
+			:profile_image_url , 
+			:datetime
+		)
+	');
+	$sth->bindValue(':user_id' , $_SESSION["user_id"] , PDO::PARAM_INT);
+	$sth->bindValue(':screen_name' , $_SESSION["screen_name"] , PDO::PARAM_STR);
+	$sth->bindValue(':name' , $_SESSION["name"] , PDO::PARAM_STR);
+	$sth->bindValue(':profile_image_url' , $_SESSION["profile_image_url"] , PDO::PARAM_STR);
+	$sth->bindValue(':datetime' , $datetime , PDO::PARAM_STR);
+	$sth->execute();
+	
 }
 
 

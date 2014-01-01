@@ -11,36 +11,36 @@ $db_link = db_access();
 switch (true) {
 	case (isset($_POST["question_popularity"])):
 		// 人気（投票数が多い）設問を取得
-		$sql = 'SELECT question_id FROM question ORDER BY answer_count_0 + answer_count_1 DESC LIMIT 5';
-		$result = $db_link->query($sql);
+		$sth = $db_link->prepare('SELECT question_id FROM question ORDER BY answer_count_0 + answer_count_1 DESC LIMIT 5');
+		$sth->execute();
 		$list_title = "人気投稿";
 	break;
 
 	case (isset($_POST["vote_new"])):
 		// 最近投票された設問を取得
-		$sql = 'SELECT DISTINCT question_id FROM answer ORDER BY time DESC LIMIT 5';
-		$result = $db_link->query($sql);
+		$sth = $db_link->prepare('SELECT DISTINCT question_id FROM answer ORDER BY time DESC LIMIT 5');
+		$sth->execute();
 		$list_title = "新着投票";
 	break;
 
 	case (isset($_POST["question_mine"])):
 		// 自分が投稿した設問を取得
-		$sql = 'SELECT question_id FROM question WHERE user_id = "'.$user_id.'" ORDER BY question_id DESC LIMIT 5';
-		$result = $db_link->query($sql);
+		$sth = $db_link->prepare('SELECT question_id FROM question WHERE user_id = "'.$user_id.'" ORDER BY question_id DESC LIMIT 5');
+		$sth->execute();
 		$list_title = "自分投稿";
 	break;
 
 	case (isset($_POST["answer_mine"])):
 		// 自分が投票した設問を取得
-		$sql = 'SELECT question_id FROM answer WHERE user_id = "'.$user_id.'" ORDER BY time DESC LIMIT 5';
-		$result = $db_link->query($sql);
+		$sth = $db_link->prepare('SELECT question_id FROM answer WHERE user_id = "'.$user_id.'" ORDER BY time DESC LIMIT 5');
+		$sth->execute();
 		$list_title = "自分投票";
 	break;
 
 	default:
 		// 新規設問を取得
-		$sql = 'SELECT question_id FROM question ORDER BY question_id DESC LIMIT 5';
-		$result = $db_link->query($sql);
+		$sth = $db_link->prepare('SELECT question_id FROM question ORDER BY question_id DESC LIMIT 5');
+		$sth->execute();
 		$list_title = "新着投稿";
 	break;
 }
@@ -49,7 +49,7 @@ switch (true) {
 db_close($db_link);
 
 $question_list = array();
-while ($row = $result->fetch()) {
+while ($row = $sth->fetch()) {
 	$question = new question($row["question_id"]);
 	$question_list[] = $question;
 }
@@ -90,7 +90,7 @@ while ($i < count($question_list)) {
 ?>
 	
 	<div class="question_title">
-		<a href="./question.php?question_id='<?php echo $question_list[$i]->question_id;?>'"><?php echo $question_list[$i]->question_title;?></a>
+		<a href="./question.php?question_id=<?php echo $question_list[$i]->question_id;?>"><?php echo $question_list[$i]->question_title;?></a>
 	</div>
 	
 	<div class="question_box">

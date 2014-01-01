@@ -2,8 +2,6 @@
 // DBアクセス用の情報を取得
 require_once '../../pass/dotti.php';
 
-
-
 //DB接続処理
 function db_access() {
 
@@ -27,15 +25,4 @@ function db_access() {
 function db_close($db_link) {
 	$db_link = null;
 }
-
-//DB接続エラー
-function db_error($result) {
-	if (!$result) {
-		//文字コードをutf8に設定
-		mysql_set_charset('utf8');
-		
-		die('クエリーが失敗しました。'.mysql_error());
-	}
-}
-
 ?>
