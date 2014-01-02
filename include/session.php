@@ -31,6 +31,9 @@ require_once './twitteroauth/twitteroauth.php';
 // DBアクセス処理
 require_once './include/db_access.php';
 
+// デバッグ用の関数
+require_once './include/debug.php';
+
 // クラスオートロード処理
 function __autoload($class_name) {
 	$file = './class/'.$class_name.'.php';

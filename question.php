@@ -28,7 +28,7 @@ if (isset($_GET['question_id'])) {
 		</div>
 		
 		<div class="question_box">
-			投稿者:<?php echo $question_owner->screen_name?>
+			投稿者:<a href="./mypage.php?user_id=<?php echo $question_owner->user_id ?>"><?php echo $question_owner->screen_name ?></a>
 		</div>
 		
 		<div class="question_box">
